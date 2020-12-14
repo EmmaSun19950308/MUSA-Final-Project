@@ -1,0 +1,6 @@
+"0",""
+"0","belgium_basemap <- get_stamenmap(bbox = c(left = 2.739258, bottom = 49.563228,"
+"0","                                          right = 6.551513, top = 51.695260), "
+"0","                                 zoom = 11)"
+"2","
+"
