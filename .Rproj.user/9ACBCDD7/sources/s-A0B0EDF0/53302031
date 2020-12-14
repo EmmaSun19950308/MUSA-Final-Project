@@ -3,7 +3,7 @@
     "path": "~/Box Sync/GitHub/Final Project/Final.RMD",
     "project_path": "Final.RMD",
     "type": "r_markdown",
-    "hash": "1413448478",
+    "hash": "3775739746",
     "contents": "",
     "dirty": false,
     "created": 1606948654966.0,
@@ -11,16 +11,16 @@
     "relative_order": 4,
     "properties": {
         "tempName": "Untitled1",
-        "cursorPosition": "279,0",
-        "scrollLine": "285",
-        "last_setup_crc32": "A0B0EDF0c69000"
+        "cursorPosition": "1083,0",
+        "scrollLine": "1082",
+        "last_setup_crc32": "A0B0EDF0f4b811d6"
     },
     "folds": "",
-    "lastKnownWriteTime": 1607969688,
+    "lastKnownWriteTime": 1607979501,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1607969688317,
+    "last_content_update": 1607979501734,
     "read_only": false,
     "read_only_alternatives": []
 }

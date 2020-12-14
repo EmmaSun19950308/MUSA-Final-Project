@@ -50,6 +50,8 @@ library(plotly)
 library(ggmap)
 library(data.table)
 library(gganimate)
+library(plotROC)
+library(pROC)
 
 
 # 2. Identify functions
@@ -910,5 +912,179 @@ ggplot(data_f %>%
 
 ```
 
+
+
+
+
+## IV. Model Building and Prediction
+
+Ordinal Regression (also known as Ordinal Logistic Regression) is another extension of binomial logistics regression. Ordinal regression is used to predict the dependent variable with ‘ordered’ multiple categories and independent variables. In other words, it is used to facilitate the interaction of dependent variables (having multiple ordered levels) with one or more independent variables.
+
+For building this model, we will be using the polr command to estimate an ordered logistic regression. Then, we’ll specify Hess=TRUE to let the model output show the observed information matrix from optimization which is used to get standard errors.
+
+
+```{r model, echo=TRUE, message=FALSE, warning=FALSE,results ='asis'}
+
+# Create regression dataset
+data_f_reg <- data_f %>% 
+  mutate(hour = hour(interval60),
+         min = hour(interval15)) %>%
+  dplyr::select(-name,-date,-time,-connection,-from.X,-from.Y,-to.X,-to.Y,-datetime,-X,-lat,-lng,-date_time,-interval60,-interval15) %>% 
+  filter(country.code == 'be') %>% 
+  st_drop_geometry() %>%
+  na.omit()
+
+data_f_reg$high_occ <- ifelse(data_f_reg$occupancy == "high", "Yes","No")
+data_f_reg$high_occ_num <- ifelse(data_f_reg$occupancy == "high", 1,0)
+# table(data_f_reg$high_occ)
+
+set.seed(3456)
+trainIndex <- createDataPartition(data_f_reg$occupancy, p = .65,
+                                  list = FALSE,
+                                  times = 1)
+data_f_regTrain <- data_f_reg[ trainIndex,]
+data_f_regTest  <- data_f_reg[-trainIndex,]
+
+
+
+
+
+
+# m0 <- multinom(occupancy ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + time_of_day + vehicle_type , data = na.omit(data_f_reg),MaxNWts =10000000)
+
+# m1 <- multinom(occupancy ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day,  data = na.omit(data_f_reg),MaxNWts =10000000)
+
+m0 <- glm(high_occ_num ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type,
+          data = data_f_reg,
+          family="binomial" (link="logit"))
+
+m1 <- glm(high_occ_num ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day,
+          data = data_f_reg,
+          family="binomial" (link="logit"))
+
+
+
+stargazer(m0, m1, type = "html", 
+          title = "Table. Summary Statistics of Model 1 and Model 2",
+          header = FALSE,
+          single.row = TRUE,
+          column.labels=c("Model 1","Model 2"))
+
+
+```
+
+
+
+```{r Prediction and Plot, message=FALSE, warning=FALSE}
+testProbs0 <- data.frame(Outcome0 = as.factor(data_f_reg$high_occ_num),
+                        Probs0 = predict(m0, newdata = data_f_reg, na.rm = TRUE, type= "response" ))
+
+
+testProbs1 <- data.frame(Outcome1 = as.factor(data_f_reg$high_occ_num),
+                        Probs1 = predict(m1, newdata = data_f_reg, na.rm = TRUE, type= "response" ))
+
+
+
+ggplot(testProbs0, aes(x = Probs0, fill = as.factor(Outcome0))) + 
+  geom_density() +
+  facet_grid(Outcome0 ~ .) +
+  scale_fill_manual(values = palette2,
+                          name = "Predicated High Occupancy",
+                    labels = c("Low/Medium", "High")) +
+  labs(x = "Occupancy", y = "Density of probabilities",
+       title = "Distribution of predicted probabilities by observed outcome\n",
+       caption = 'Figure') +
+  theme(strip.text.x = element_text(size = 18),
+        legend.position = "bottom") +
+  plotTheme()
+
+ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) + 
+  geom_density() +
+  facet_grid(Outcome1 ~ .) +
+  scale_fill_manual(values = palette2,
+                          name = "Predicated High Occupancy",
+                    labels = c("Low/Medium", "High")) +
+  labs(x = "Occupancy", y = "Density of probabilities",
+       title = "Distribution of predicted probabilities by observed outcome - Model 2\n",
+       caption = 'Figure') +
+  theme(strip.text.x = element_text(size = 18),
+        legend.position = "bottom") +
+  plotTheme()
+```
+
+
+## V. Model Evaluation and Validation
+
+### 5.1 Good of Fit - Confusion Matrix
+
+
+```{r}
+testProbs1 <- 
+  testProbs1 %>%
+  mutate(predOutcome1  = as.factor(ifelse(testProbs1$Probs1 > 0.5 , 1, 0)))
+
+caret::confusionMatrix(testProbs1$predOutcome1, testProbs1$Outcome1, 
+                       positive = "1")
+```
+
+
+### 5.2 Cross Validation
+
+```{r CV, message=FALSE, warning=FALSE}
+ctrl <- trainControl(method = "cv", number = 30, classProbs=TRUE, summaryFunction=twoClassSummary)
+
+
+cvFit.reg1 <- train(high_occ ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day
+                      , data = data_f_reg %>%
+                  dplyr::mutate(y = ifelse(high_occ =="no","c1.yes","c1.no")), 
+                method="glm", family="binomial",
+                metric="ROC", trControl = ctrl)
+
+
+
+
+```
+
+```{r CV plots, message=FALSE, warning=FALSE}
+dplyr::select(cvFit.reg1$resample, -Resample) %>%
+  gather(metric, value) %>%
+  left_join(gather(cvFit.reg1$results[2:4], metric, mean)) %>%
+  ggplot(aes(value)) + 
+    geom_histogram(bins=35, fill = "#3e7ec2") +
+    facet_wrap(~metric) +
+    geom_vline(aes(xintercept = mean), colour = "#981FAC", linetype = 3, size = 1.5) +
+    scale_x_continuous(limits = c(0, 1)) +
+    labs(x="Goodness of Fit", y="Count", 
+         title="CV Goodness of Fit Metrics, Model 1",
+         subtitle = "Across-fold mean reprented as dotted lines\n",
+         caption = "Figure") +
+  plotTheme()
+
+# show RMSE, MAE, R^2
+kable(cvFit.reg1$resample,
+          caption = 'Table RESULT. Cross-validation Test: Summary of ROC, Sens, and Spec') %>%
+  kable_styling("striped", full_width = F)
+```
+
+### 5.3 ROC Curve for Model
+
+```{r ROC Curve, message=FALSE, warning=FALSE}
+testProbs1$Outcome1 <- as.numeric(testProbs1$Outcome1)
+auc(testProbs1$Outcome1, testProbs1$Probs1)
+
+ggplot(testProbs1, aes(d = as.numeric(testProbs1$Outcome1), m = Probs1)) +
+  geom_roc(n.cuts = 50, labels = FALSE, colour = "#3e7ec2") +
+  style_roc(theme = theme_grey) +
+  geom_abline(slope = 1, intercept = 0, size = 1.5, color = '#a6dbbc') +
+  labs(title = "ROC Curve - Model 1\n",
+       caption = 'Figure') +
+  plotTheme()
+```
+
+
+
+
+
+## VI. Conclusion
 
 
