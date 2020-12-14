@@ -1062,7 +1062,7 @@ dplyr::select(cvFit.reg1$resample, -Resample) %>%
 
 # show RMSE, MAE, R^2
 kable(cvFit.reg1$resample,
-          caption = 'Table RESULT. Cross-validation Test: Summary of ROC, Sens, and Spec') %>%
+          caption = 'Table RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality') %>%
   kable_styling("striped", full_width = F)
 ```
 
@@ -1081,6 +1081,17 @@ ggplot(testProbs1, aes(d = as.numeric(testProbs1$Outcome1), m = Probs1)) +
   plotTheme()
 ```
 
+
+```{r}
+cost_benefit_table <-
+   testProbs2 %>%
+      count(predOutcome2, Outcome2) %>%
+      summarize(True_Negative = sum(n[predOutcome2==0 & Outcome2==0]),
+                True_Positive = sum(n[predOutcome2==1 & Outcome2==1]),
+                False_Negative = sum(n[predOutcome2==0 & Outcome2==1]),
+                False_Positive = sum(n[predOutcome2==1 & Outcome2==0])) %>%
+       gather(Variable, Count) 
+```
 
 
 
