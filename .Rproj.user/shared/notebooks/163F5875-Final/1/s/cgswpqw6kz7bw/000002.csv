@@ -1,6 +1,0 @@
-"0","m0 <- glm(high_occ ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type,
-          data = data_f_reg,
-          family=""binomial"" (link=""logit""))
-"
-"2","Error in eval(family$initialize) : y values must be 0 <= y <= 1
-"

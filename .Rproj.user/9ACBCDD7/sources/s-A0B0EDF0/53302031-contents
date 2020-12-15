@@ -1,6 +1,6 @@
 ---
-title: "Final Project"
-author: "Emma Sun"
+title: "Final Project: BeRail, Be Easy"
+author: "Emma Sun, Yiming Ma"
 date: "12/2/2020"
 output: 
   html_document:
@@ -18,6 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## I. Introduction
 
+Belgium has a decent public transport network, offering accessible and efficient travel across the country. Although geographically small, Belgium is bursting with popular cities like **Brussels**,**Liege**,**Charleroi**, **Gent**, and **Antwerpen**, connected by the vast network of the train system.
+
+Belgium has a dense railway network, making trains the quickest and most efficient way to travel between towns and cities. In order to, train occupancy prediction can help transportation planners to improve the system by allocation public resources and decrease operation cost as well. 
+
+This project builds a Logistic Regression model to predict high/low occupancy rate of Belgium train stations by integrating various data sources. Model is validated across 100 folders and space patterns. The project offers insights on potential usage for transportation planners. 
 
 
 
@@ -138,7 +143,7 @@ nn_function <- function(measureFrom,measureTo,k) {
 
 palette7 <- c('#4c281a','#8f4405',"#ff6d69","#0be7fb","#3182bd","#08519c",'#f9c37a')
 palette5 <- c("#eff3ff","#bdd7e7","#6baed6","#3182bd","#08519c")
-palette4 <- c("#D2FBD4","#FFA500","#005582",'#B22222')
+palette4 <- c("#3bc14a","#FFA500","#005582",'#B22222')
 palette3 <- c('#B22222',"#41c447","#005582" )
 palette2 <- c("#eadd46","#485123")
 
@@ -150,10 +155,26 @@ palette2 <- c("#eadd46","#485123")
 
 ## II. Data Loading and Feature Engineering
 
+This 
 
 
 
 ### 2.1 Data Loading
+
+This project leverages 6 datasets in total. 
+
+*    `occupancy`: This is the fundamental dataset provided on [Kaggle](https://www.kaggle.com/c/train-occupancy-prediction/discussion/27828#latest-156701) to identify the occupancy level of trains in Belgium in 2016. This project only works on the training set. 
+
+*    `stations`: This data [table](https://github.com/GillesVandewiele/KaggleTrainOccupancy/blob/master/line_info.csv) contains all information of train stations.
+
+*    `weather`: The integrated [dataset](https://github.com/GillesVandewiele/KaggleTrainOccupancy) contains temperature, humidity, windspeed, and visibility data of each station per hour from July 2016 to October 2016. 
+
+*    `facility`: The [dataset](https://github.com/GillesVandewiele/KaggleTrainOccupancy) identifies the amenities of each station. To make it simple, we sum all facilities of each station when using this variable. 
+
+*    `rail`: A [shapefile](https://mapcruzin.com/free-belgium-arcgis-maps-shapefiles.htm) to show the railway pattern in Belgium.
+
+*    `lines`: By connecting different stations, this [dataset](https://github.com/GillesVandewiele/KaggleTrainOccupancy) identifies train lines across Belgium.
+
 
 ```{r Data loading, echo=TRUE, message=FALSE, warning=FALSE}
 ## 1. occupancy data
@@ -283,6 +304,21 @@ data_t_00 <- merge(data_t_0,weather,by.x=c("name","interval60"),by.y=c("station_
 
 
 ### 2.2 Feature Engineering
+
+To enrich the preliminary datasets provided above and build a robust model, this project generates plenty of features to show characteristics of train stations and train operations:
+
+*    **Station density**: By leveraging `nn_function`, we create `stationsdist` to show the distance of the nearest three other stations around each station.
+
+*    **Station importance**: Measured by population size, we filter out the five biggest cities, and we create `majc_nn5` to show the distance between each station to the major cities.
+
+*    **Station occupancy level**: We generate a series of features to identify the proportions of each occupancy level in this station. To make it more accurate, we conduct the calculation for the departure stations and destination stations separately. 
+
+*    **Station group occupancy level**: Addition to the occupancy level of each station, we also generate three more features to show the average proportion of each occupancy level of station groups. Each group consists of the station itself as well as the three nearest stations. 
+
+*    **Station popularity**: To show how busy one station can be, we calculate the connection number of each station. 
+Occupancy level time lag: Creating time lag variables will add additional nuance about the demand during a given time period.  
+
+
 
 #### 2.2.1 Station Density
 
@@ -428,7 +464,6 @@ stations_occq <- select(stations_occ,1,14,15,16,17,18,19,20)
 
 Codes below calculate the average occupancy level proportion of the nearest **three** stations of each stations.
 
-
 ```{r  Average Occupancy Level Proportion by Station Group , echo=TRUE, message=FALSE, warning=FALSE}
 neighborList <- knn2nb(knearneigh(st_coordinates(stations), 3))
 occupancy$from <- as.character(occupancy$from)
@@ -542,7 +577,7 @@ stations_final <- merge(st_drop_geometry(stations_copy),
 
 #### 2.2.6 Occupancy Level Time Lag
 
-Creating time lag variables will add additional nuance about the demand during a given time period. Since the period of given data barely covers holidays, thus this analysis creates `lagHour`, `lag2Hours`,`lag3Hours`, `lag4Hours`, and `lag12Hours` to show occupancy level of each shift before and after a certain time whth holiday effect ruled out. 
+Since the period of given data barely covers holidays, thus this analysis creates `lagHour`, `lag2Hours`,`lag3Hours`, `lag4Hours`, and `lag12Hours` to show occupancy level of each shift before and after a certain time whth holiday effect ruled out. 
 
 
 ```{r Time Lag, message=FALSE, warning=FALSE, include=FALSE}
@@ -598,8 +633,9 @@ data_t <-
 
 ## III. Exploratory Data Analysis
 
-### 3.1 Stations Characteristics
 
+
+### 3.1 Stations Characteristics
 
 #### 3.1.1 Station Density by Occupancy Level 
 
@@ -814,7 +850,7 @@ gganimate::animate(p1,  duration=10,renderer = gifski_renderer())
 
 ### 5. Space/Time Correlation
 
-```{r Space/Time Correlation, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 12, fig.width = 10}
+```{r Space/Time Correlation, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = data_f %>%
@@ -918,14 +954,16 @@ ggplot(data_f %>%
 
 ## IV. Model Building and Prediction
 
-Ordinal Regression (also known as Ordinal Logistic Regression) is another extension of binomial logistics regression. Ordinal regression is used to predict the dependent variable with ‘ordered’ multiple categories and independent variables. In other words, it is used to facilitate the interaction of dependent variables (having multiple ordered levels) with one or more independent variables.
+Since we are more concerned about whether the occupancy level is high or not, starting from the model building, this project is planning to transform the independent variable to `high_occ` which is a binomial variable, consisting of two levels: Yes and No to identify the occupancy level is high or not. Therefore, we will build a **Logistic Regression** model.
 
-For building this model, we will be using the polr command to estimate an ordered logistic regression. Then, we’ll specify Hess=TRUE to let the model output show the observed information matrix from optimization which is used to get standard errors.
 
 
 ```{r model, echo=TRUE, message=FALSE, warning=FALSE,results ='asis'}
 
 # Create regression dataset
+data_f <- data_f %>% 
+  rowid_to_column(var = "rowIndex") 
+  
 data_f_reg <- data_f %>% 
   mutate(hour = hour(interval60),
          min = hour(interval15)) %>%
@@ -983,7 +1021,7 @@ testProbs0 <- data.frame(Outcome0 = as.factor(data_f_reg$high_occ_num),
 testProbs1 <- data.frame(Outcome1 = as.factor(data_f_reg$high_occ_num),
                         Probs1 = predict(m1, newdata = data_f_reg, na.rm = TRUE, type= "response" ))
 
-
+# View(testProbs1)
 
 ggplot(testProbs0, aes(x = Probs0, fill = as.factor(Outcome0))) + 
   geom_density() +
@@ -1010,6 +1048,8 @@ ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) +
   theme(strip.text.x = element_text(size = 18),
         legend.position = "bottom") +
   plotTheme()
+
+
 ```
 
 
@@ -1018,20 +1058,44 @@ ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) +
 ### 5.1 Good of Fit - Confusion Matrix
 
 
-```{r}
+```{r conf.matrix with description, echo=TRUE, message=FALSE, warning=FALSE}
 testProbs1 <- 
   testProbs1 %>%
   mutate(predOutcome1  = as.factor(ifelse(testProbs1$Probs1 > 0.5 , 1, 0)))
 
+
 caret::confusionMatrix(testProbs1$predOutcome1, testProbs1$Outcome1, 
                        positive = "1")
+
+conf.matrix.table1 <-
+   testProbs1 %>%
+      count(predOutcome1, Outcome1) %>%
+      summarize(True_Negative = sum(n[predOutcome1==0 & Outcome1==0]),
+                True_Positive = sum(n[predOutcome1==1 & Outcome1==1]),
+                False_Negative = sum(n[predOutcome1==0 & Outcome1==1]),
+                False_Positive = sum(n[predOutcome1==1 & Outcome1==0])) %>%
+       gather(Variable, Count) %>%
+    bind_cols(data.frame(Description = c(
+              "Predicted correctly the occurancy of train is not high",
+              "Predicted correctly the occurancy of train is high",
+              "Predicted incorrectly the occurancy of train is not high",
+              "Predicted incorrectly the occurancy of train is high")))
+
+
+kable(conf.matrix.table1) %>% 
+  kable_styling(font_size = 12, full_width = F,
+                bootstrap_options = c("striped", "hover", "condensed")) %>%
+  footnote(general = "Table. Confusion Matrix Table\n",
+           general_title= '\n')
+
+
 ```
 
 
 ### 5.2 Cross Validation
 
 ```{r CV, message=FALSE, warning=FALSE}
-ctrl <- trainControl(method = "cv", number = 30, classProbs=TRUE, summaryFunction=twoClassSummary)
+ctrl <- trainControl(method = "cv", number = 100, classProbs=TRUE, summaryFunction = twoClassSummary)
 
 
 cvFit.reg1 <- train(high_occ ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day
@@ -1040,10 +1104,8 @@ cvFit.reg1 <- train(high_occ ~ from + to + avg_stop_times + facility_sum + tempe
                 method="glm", family="binomial",
                 metric="ROC", trControl = ctrl)
 
-
-
-
 ```
+
 
 ```{r CV plots, message=FALSE, warning=FALSE}
 dplyr::select(cvFit.reg1$resample, -Resample) %>%
@@ -1063,8 +1125,12 @@ dplyr::select(cvFit.reg1$resample, -Resample) %>%
 # show RMSE, MAE, R^2
 kable(cvFit.reg1$resample,
           caption = 'Table RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality') %>%
-  kable_styling("striped", full_width = F)
+  kable_styling("striped", full_width = F) %>%
+  scroll_box(width = "100%", height = "200px")
 ```
+
+
+
 
 ### 5.3 ROC Curve for Model
 
@@ -1081,18 +1147,50 @@ ggplot(testProbs1, aes(d = as.numeric(testProbs1$Outcome1), m = Probs1)) +
   plotTheme()
 ```
 
+### 5.5 Evaluation across space
 
-```{r}
-conf.matrix.table1 <-
-   testProbs2 %>%
-      count(predOutcome2, Outcome2) %>%
-      summarize(True_Negative = sum(n[predOutcome2==0 & Outcome2==0]),
-                True_Positive = sum(n[predOutcome2==1 & Outcome2==1]),
-                False_Negative = sum(n[predOutcome2==0 & Outcome2==1]),
-                False_Positive = sum(n[predOutcome2==1 & Outcome2==0])) %>%
-       gather(Variable, Count) 
+```{r new_data, echo=TRUE, message=FALSE, warning=FALSE}
+AA <- data_f_reg %>%
+   mutate(Probs = predict(m1, newdata = data_f_reg, na.rm = TRUE, type= "response" ),
+          Pred  = as.factor(ifelse(Probs > 0.5 , 1, 0))) %>%
+  dplyr::select(rowIndex, high_occ,high_occ_num, Pred)
+
+
+new_data <- merge(x = AA, y = data_f, by.x = "rowIndex") %>%
+  mutate(CM = case_when(
+    new_data$Pred == 0 & new_data$high_occ_num == 0 ~ 'TN',
+    Pred == 0 & high_occ_num == 1 ~ 'FN',
+    Pred == 1 & high_occ_num == 0 ~ 'FP',
+    Pred == 1 & high_occ_num == 1 ~ 'TP'))
+
+# table(new_data$CM)
+
+conf.matrix.station <- new_data %>%
+  group_by(name, CM) %>%
+  summarize(count = n())
+
+conf.matrix.station.sf <- merge(x = conf.matrix.station, y = stations, by = "name" , all.x = TRUE)  %>%
+  st_sf()
+
 ```
 
+
+```{r Confustion Matrix across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 8, fig.width = 8}
+ggplot() +
+  geom_sf(data = rail, color = "grey") +  
+  geom_sf(data = conf.matrix.station.sf %>%
+            filter(country.code == 'be'), 
+          aes(color = count), size = 1) +
+  labs(title="Confustion Matrix across Stations",
+       subtitle = ' ',
+       caption = 'Figure')+ 
+  scale_colour_viridis(direction = -1,
+  discrete = FALSE, option = "plasma",
+  name = 'Counts')+
+  facet_wrap(~CM) + 
+  mapTheme()+
+  plotTheme() 
+```
 
 
 
