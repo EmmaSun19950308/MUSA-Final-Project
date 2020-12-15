@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:100%; "><table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Table 3. RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality</caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> ROC </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Sens </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Spec </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Resample </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5416667 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold002 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5757576 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold003 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8055556 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold004 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6969697 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold005 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8472222 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold006 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.3454545 </td>
+   <td style="text-align:right;"> 0.4545455 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold007 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5666667 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold008 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.9305556 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold009 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6250000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold010 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold011 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold012 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6527778 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold013 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold014 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5500000 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold015 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6818182 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold016 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8636364 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold017 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8000000 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold018 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold019 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7000000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold020 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8833333 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold021 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:left;"> Fold022 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.3888889 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold023 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6250000 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold024 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4444444 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold025 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8055556 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold026 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5500000 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold027 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5500000 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold028 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7833333 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold029 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4393939 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold030 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold031 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8545455 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold032 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4722222 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold033 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold034 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6527778 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold035 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.3030303 </td>
+   <td style="text-align:right;"> 0.6363636 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold036 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.2909091 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold037 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold038 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5694444 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold039 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6181818 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold040 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7222222 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold041 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold042 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6500000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold043 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7361111 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold044 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold045 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8472222 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold046 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6833333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold047 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold048 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold049 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5606061 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold050 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold051 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold052 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold053 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5500000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold054 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6181818 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold055 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7636364 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold056 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4305556 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold057 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7666667 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold058 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5909091 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold059 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8500000 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold060 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5454545 </td>
+   <td style="text-align:right;"> 0.6363636 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold061 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold062 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4090909 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold063 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold064 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6181818 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold065 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.9500000 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.6000000 </td>
+   <td style="text-align:left;"> Fold066 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7090909 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold067 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.3030303 </td>
+   <td style="text-align:right;"> 0.4545455 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold068 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4833333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold069 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4666667 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold070 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5833333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold071 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8194444 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold072 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5416667 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold073 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6333333 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold074 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5833333 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold075 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7166667 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold076 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.8939394 </td>
+   <td style="text-align:right;"> 0.9090909 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold077 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.9583333 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold078 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.8333333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold079 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6060606 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold080 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5151515 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5303030 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold082 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7000000 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold083 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6363636 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7000000 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold085 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5333333 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.0000000 </td>
+   <td style="text-align:left;"> Fold086 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7638889 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:left;"> Fold087 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5694444 </td>
+   <td style="text-align:right;"> 0.5833333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold088 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.6805556 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold089 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7361111 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold090 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7575758 </td>
+   <td style="text-align:right;"> 0.7272727 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold091 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5090909 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold092 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7166667 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold093 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4666667 </td>
+   <td style="text-align:right;"> 0.6666667 </td>
+   <td style="text-align:right;"> 0.4000000 </td>
+   <td style="text-align:left;"> Fold094 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7121212 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold095 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7424242 </td>
+   <td style="text-align:right;"> 0.8181818 </td>
+   <td style="text-align:right;"> 0.5000000 </td>
+   <td style="text-align:left;"> Fold096 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.4722222 </td>
+   <td style="text-align:right;"> 0.7500000 </td>
+   <td style="text-align:right;"> 0.3333333 </td>
+   <td style="text-align:left;"> Fold097 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.5694444 </td>
+   <td style="text-align:right;"> 0.9166667 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold098 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.7000000 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0.2000000 </td>
+   <td style="text-align:left;"> Fold099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 0.2361111 </td>
+   <td style="text-align:right;"> 0.5833333 </td>
+   <td style="text-align:right;"> 0.1666667 </td>
+   <td style="text-align:left;"> Fold100 </td>
+  </tr>
+</tbody>
+</table></div> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

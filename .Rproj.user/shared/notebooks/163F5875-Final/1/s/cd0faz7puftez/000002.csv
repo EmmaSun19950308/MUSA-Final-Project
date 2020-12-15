@@ -1,4 +1,0 @@
-"0","stations_copy <- stations"
-"0",""
-"0","stations_copy$stationsdist <- nn_function(st_coordinates(stations), st_coordinates(stations), 3)"
-"0",""

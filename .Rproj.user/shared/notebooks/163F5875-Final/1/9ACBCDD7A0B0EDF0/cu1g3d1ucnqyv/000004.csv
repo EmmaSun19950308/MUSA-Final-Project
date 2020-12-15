@@ -1,0 +1,6 @@
+"0",""
+"0",""
+"0","kable(cvFit.reg1$resample,"
+"0","          caption = 'Table 3. RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality') %>%"
+"0","  kable_styling(""striped"", full_width = F) %>%"
+"0","  scroll_box(width = ""100%"", height = ""200px"")"

@@ -1,0 +1,256 @@
+---
+title: "MSSP 630: Assignment 4"
+output: html_notebook
+---
+
+# Setup
+
+```{r Setup Environment}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+knitr::opts_knit$set(root.dir = "/Users/zzy/Desktop/MSSP 630/AS2")
+```
+
+
+
+```{r Loading}
+pacman::p_load(pacman, psych, tidyverse, vcd, stargazer)
+
+plotTheme <- function(base_size = 12) {
+  theme(
+    text = element_text( color = "black"),
+    plot.title = element_text(color = "darkred", size=15, face="bold"),
+    plot.subtitle = element_text(face="italic"),
+    plot.caption = element_text(hjust=0),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),
+    panel.grid.major = element_line("grey80", size = 0.1),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, size=2),
+    strip.background = element_rect(fill = "grey80", color = "white"),
+    strip.text = element_text(size=12),
+    axis.title = element_text(size=12),
+    axis.text = element_text(size=10),
+    plot.background = element_blank(),
+    legend.background = element_blank(),
+    legend.title = element_text(colour = "black", face = "italic"),
+    legend.text = element_text(colour = "black", face = "italic"),
+    strip.text.x = element_text(size = 14)
+  )
+}
+
+cps <- readRDS('/Users/zzy/Desktop/MSSP 630/AS2/CPS.rds')
+head(cps)
+```
+
+
+```{r Pre-processing}
+cps <- cps %>% 
+  select(STATEFIP, YEAR, RACE, EDUC, HOURWAGE, EARNWEEK, MINWAGE)
+
+describe(cps)
+```
+
+
+
+```{r Re-coding Variables}
+cps <- cps %>% 
+  mutate(RACE2 = case_when(
+    RACE == 100 ~ 'White',
+    RACE == 200 ~ 'Black',
+    RACE == 300 ~ 'American Indian',
+    RACE == 650 ~ 'Pacific',
+    RACE == 651 ~ 'Asian',
+    RACE >= 652 ~ 'Multiracial'
+  )) %>% 
+  mutate(EDUC2 = case_when(
+    EDUC == 1 ~ 0,
+    EDUC == 2 ~ 0,
+    EDUC == 0 ~ 0,
+    EDUC == 999 ~ 0,
+    EDUC == 10 ~ 1,
+    EDUC == 011 ~ 1,
+    EDUC == 012 ~ 2,
+    EDUC == 013 ~ 3,
+    EDUC == 014 ~ 4,
+    EDUC == 020 ~ 5,
+    EDUC == 021 ~ 5,
+    EDUC == 022 ~ 6,
+    EDUC == 030 ~ 7,
+    EDUC == 031 ~ 7,
+    EDUC == 032 ~ 8,
+    EDUC == 040 ~ 9,
+    EDUC == 050 ~ 10,
+    EDUC == 060 ~ 11,
+    EDUC == 070 ~ 12,
+    EDUC == 071 ~ 12,
+    EDUC == 072 ~ 12,
+    EDUC == 073 ~ 12,
+    EDUC == 080 ~ 13,
+    EDUC == 081 ~ 13,
+    EDUC == 090 ~ 14,
+    EDUC == 091 ~ 14,
+    EDUC == 092 ~ 14,
+    EDUC == 100 ~ 15,
+    EDUC == 110 ~ 16,
+    EDUC == 111 ~ 16,
+    EDUC == 120 ~ 17,
+    EDUC == 121 ~ 17,
+    EDUC == 122 ~ 18,
+    EDUC == 123 ~ 18,
+    EDUC == 124 ~ 18,
+    EDUC == 125 ~ 19)) %>% 
+  mutate(EDUC3 = case_when(
+    EDUC %in% 1:40 ~ "Less Than High School",
+    EDUC %in% 41:75 ~ "High School Graduate",
+    EDUC %in% 76:100 ~ "Some College",
+    EDUC %in% 101:125 ~"College Graduate"
+  ))
+
+head(cps[c('EDUC', 'RACE2', 'EDUC2', 'EDUC3')], 10)
+```
+
+# Question 1
+
+What are the proportions of Asian population in South Dakota & North Dakota? Are these proportions significantly different at the 5% level? Explain what the findings mean.
+```{r Q1}
+nd <- subset(cps,STATEFIP == 38)
+sd <- subset(cps, STATEFIP == 46)
+
+prop.test(x = c(sum(nd$RACE2 == "Asian"), sum(sd$RACE2 == "Asian")), 
+          n = c(nrow(nd), nrow(sd)),
+          conf.level = 0.95)
+```
+
+# Question 2
+
+What are the proportions of Black population in South Dakota & North Dakota? Are these proportions significantly different at the 5% level? Explain what the findings mean.
+```{r Q2}
+prop.test(x = c(sum(nd$RACE2 == "Black"), sum(sd$RACE2 == "Black")), 
+          n = c(nrow(nd), nrow(sd)),
+          conf.level = 0.95)
+```
+
+# Question 3
+
+What are the average weekly earnings in each educational category educ3? Report 95% confidence intervals. Explain what the findings mean both statistically and practically.
+```{r Q3}
+by(cps, cps$EDUC3, function(cps) {t.test(cps$EARNWEEK)})
+```
+
+# Question 4
+
+Are the earnings of college graduates significantly greater than the earnings of high school graduates at the 5% level? Explain what the findings mean both statistically and practically.
+```{r Q4}
+t.test(subset(cps$EARNWEEK, cps$EDUC3 == 'College Graduate'),
+       subset(cps$EARNWEEK, cps$EDUC3 == 'High School Graduate'),
+       alternative = "greater",
+       conf.level = 0.95)
+```
+
+# Question 5
+
+What are the average weekly earnings in each racial category race2? Report 95% confidence intervals. Explain what the findings mean both statistically and practically.
+```{r Q5}
+by(cps, cps$RACE2, function(cps) {t.test(cps$EARNWEEK)})
+```
+
+# Question 6
+
+Using educ3 and race2, answer the following questions: are there systematic differences in education between races? What are these differences? Are the differences in education across races significant at the 5% level?
+```{r Q6 Two-way Table & Dataframe}
+edu_race <- table(cps$EDUC3, cps$RACE2)
+round(prop.table(edu_race, 2),4)
+View(unclass(edu_race)) # to view as a dataframe
+```
+
+
+```{r Q6 Chi-squared Testing}
+chisq.test(edu_race)
+```
+
+```{r Q6 Mean of EDUC2}
+cps %>% 
+  group_by(RACE2) %>% 
+  summarise(EDUC2_avg = mean(EDUC2), .groups = 'drop') %>% 
+  arrange(desc(EDUC2_avg))
+```
+
+# Question 7
+
+For each of the non-white categories in race2: are the weekly earnings significantly different from white people’s weekly earnings at the 5% level? Explain what the findings mean both statistically and practically.
+```{r Q7}
+for (i in unique(cps$RACE2)){
+  if (i != 'White'){
+    other_temp <- subset(cps$EARNWEEK, cps$RACE2 == i)
+    white_temp <- subset(cps$EARNWEEK, cps$RACE2 == 'White')
+    test_temp <- t.test(other_temp, white_temp, conf.level = 0.95)
+    
+    print(i)
+    print('==============================')
+    print(test_temp)
+    
+    rm(list=ls(pattern="_temp"))
+  }
+}
+```
+
+# Question 8
+
+Repeat question 7, but restricting the data to people with a high school degree (remember to use & in your subset function to require both a given race and (&) a given degree). Comment on your findings.
+```{r Q8}
+for (i in unique(cps$RACE2)){
+  if (i != 'White'){
+    other_temp <- subset(cps$EARNWEEK, cps$RACE2 == i & cps$EDUC3 == 'High School Graduate')
+    white_temp <- subset(cps$EARNWEEK, cps$RACE2 == 'White' & cps$EDUC3 == 'High School Graduate')
+    
+    test_temp <- t.test(other_temp, white_temp, conf.level = 0.95)
+    
+    print(i)
+    print('==============================')
+    print(test_temp)
+    
+    rm(list=ls(pattern="_temp"))
+  }
+}
+```
+
+# Question 9
+
+Repeat question 7, but restricting the data to people with a college degree. Comment on your findings.
+```{r Q9}
+for (i in unique(cps$RACE2)){
+  if (i != 'White'){
+    other_temp <- subset(cps$EARNWEEK, cps$RACE2 == i & cps$EDUC3 == 'College Graduate')
+    white_temp <- subset(cps$EARNWEEK, cps$RACE2 == 'White' & cps$EDUC3 == 'College Graduate')
+    
+    test_temp <- t.test(other_temp, white_temp, conf.level = 0.95)
+    
+    print(i)
+    print('==============================')
+    print(test_temp)
+    
+    rm(list=ls(pattern="_temp"))
+  }
+}
+```
+
+# Question 10
+
+Regress weekly earnings on years of education (educ2). Explain what the findings mean both statistically and practically.
+```{r Q10 Regression Model Summary}
+model1 <- lm(EARNWEEK ~ EDUC2, data = cps)
+stargazer(model1, type = 'text', title='Linear Regression: Weekly Earning on Years of Education', digits = 4,
+          align = T, no.space = T)
+```
+
+```{r Q10 Regression Model Plot}
+ggplot(cps, aes(x = EDUC2, y = EARNWEEK)) + 
+   geom_smooth(formula = y ~ x, method = lm, se = FALSE, col = "darkred", size = 1.5) +
+   labs(title = 'Regression: Education and Weekly Earning', 
+        caption = 'Figure 1',
+        x = 'Years of Education',
+        y = 'Weekly Earnings') +
+   plotTheme()
+```
+
+# THE END

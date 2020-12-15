@@ -24,6 +24,7 @@ Belgium has a dense railway network, making trains the quickest and most efficie
 
 This project builds a Logistic Regression model to predict high/low occupancy rate of Belgium train stations by integrating various data sources. Model is validated across 100 folders and space patterns. The project offers insights on potential usage for transportation planners. 
 
+![Belgium Railway Map](/Users/penguin/Box Sync/GitHub/Final Project/map.png)
 
 
 ```{r Setup, message=FALSE, warning=FALSE, include=FALSE}
@@ -143,7 +144,7 @@ nn_function <- function(measureFrom,measureTo,k) {
 
 palette7 <- c('#4c281a','#8f4405',"#ff6d69","#0be7fb","#3182bd","#08519c",'#f9c37a')
 palette5 <- c("#eff3ff","#bdd7e7","#6baed6","#3182bd","#08519c")
-palette4 <- c("#3bc14a","#FFA500","#005582",'#B22222')
+palette4 <- c("#eb3333","#312c9e","#ff724e",'#1b8f84')
 palette3 <- c('#B22222',"#41c447","#005582" )
 palette2 <- c("#eadd46","#485123")
 
@@ -335,6 +336,11 @@ stations_copy$stationsdist <- nn_function(st_coordinates(stations), st_coordinat
 #### 2.2.2 Distance of Stations to Major Cities
 
 Codes below calculate the distances of each station to the five major cities: **Brussels**,**Liege**,**Charleroi**, **Gent**, and **Antwerpen** measured by population size. 
+
+![Belgium Big Cities](/Users/penguin/Box Sync/GitHub/Final Project/Five biggest cities.png)
+
+
+
 
 
 
@@ -1053,7 +1059,7 @@ stargazer(m0, m1, type = "html",
 
 ### 4.2 Occupancy Prediction
 
-By leveraging the two models, we predict the occupancy level and generate two plots to show the distribution of predicted outcomes between the two models. Without distinguished differences, we cannot directly conclude which one is better so far. 
+By leveraging the two models, we predict the occupancy level and generate two plots to show the distribution of predicted outcomes between the two models. Without distinguished differences, we cannot directly conclude which one is better so far. But since we are more concerned about the time-lag features in our model, we will stick on the Model 2 from now on. 
 
 ```{r Prediction and Plot, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8}
 testProbs0 <- data.frame(Outcome0 = as.factor(data_f_reg$high_occ_num),
@@ -1100,6 +1106,15 @@ ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) +
 
 ### 5.1 Good of Fit: Confusion Matrix
 
+A “confusion matrix” for the threshold of 50% shows us the rate at which we got True Positives (aka Sensitivity), False Positives, True Negatives (aka Specificity) and False Negatives for that threshold.
+
+In this case,
+*    True Positives: Predicted correctly the occupancy of train is high.
+*    False Positives: Predicted incorrectly the occupancy of train is high.
+*    True Negatives: Predicted correctly the occupancy of train is not high.
+*    False Negatives: Predicted incorrectly the occupancy of train is not high. 
+
+This analysis more cares about sensitivity since the goal is to find out the stations with high occupancy level. So far, the sensitivity of the model is 0.47. 
 
 
 ```{r conf.matrix with description, echo=TRUE, message=FALSE, warning=FALSE}
@@ -1120,29 +1135,32 @@ conf.matrix.table1 <-
                 False_Positive = sum(n[predOutcome1==1 & Outcome1==0])) %>%
        gather(Variable, Count) %>%
     bind_cols(data.frame(Description = c(
-              "Predicted correctly the occurancy of train is not high",
-              "Predicted correctly the occurancy of train is high",
-              "Predicted incorrectly the occurancy of train is not high",
-              "Predicted incorrectly the occurancy of train is high")))
+              "Predicted correctly the occupancy of train is not high",
+              "Predicted correctly the occupancy of train is high",
+              "Predicted incorrectly the occupancy of train is not high",
+              "Predicted incorrectly the occupancy of train is high")))
 
 
 kable(conf.matrix.table1) %>% 
   kable_styling(font_size = 12, full_width = F,
                 bootstrap_options = c("striped", "hover", "condensed")) %>%
-  footnote(general = "Table. Confusion Matrix Table\n",
+  footnote(general = "Table 2. Confusion Matrix Table\n",
            general_title= '\n')
 
 
 ```
 
 
-### 5.2 Cross Validation
+### 5.2 Cross Validation on 100 k-folds
+
+This section conducted cross-validation on both models. The outputs include the ROC, sensitivity and specificity across the 100 k-folds. Both models generalize well with regard to sensitivity, while neither of models generalize well with specificity. Since we are more concerned about the sensitivity as mentioned above, such an outcome is satisfied. 
+
 
 ```{r CV, message=FALSE, warning=FALSE}
 ctrl <- trainControl(method = "cv", number = 100, classProbs=TRUE, summaryFunction = twoClassSummary)
 
 
-cvFit.reg1 <- train(high_occ ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day
+cvFit.reg1 <- train(high_occ ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day + distance + stationsdist
                       , data = data_f_reg %>%
                   dplyr::mutate(y = ifelse(high_occ =="no","c1.yes","c1.no")), 
                 method="glm", family="binomial",
@@ -1161,22 +1179,99 @@ dplyr::select(cvFit.reg1$resample, -Resample) %>%
     geom_vline(aes(xintercept = mean), colour = "#981FAC", linetype = 3, size = 1.5) +
     scale_x_continuous(limits = c(0, 1)) +
     labs(x="Goodness of Fit", y="Count", 
-         title="CV Goodness of Fit Metrics, Model 1",
+         title="CV Goodness of Fit Metrics",
          subtitle = "Across-fold mean reprented as dotted lines\n",
-         caption = "Figure") +
+         caption = "Figure 5.2") +
   plotTheme()
 
-# show RMSE, MAE, R^2
+
 kable(cvFit.reg1$resample,
-          caption = 'Table RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality') %>%
+          caption = 'Table 3. RESULT. Cross-validation Test: Summary of ROC, Sensitivity, and Speciality') %>%
   kable_styling("striped", full_width = F) %>%
   scroll_box(width = "100%", height = "200px")
 ```
 
 
+### 5.3 Model Generalization across Space
+
+This section creates two sets of plots to show how model prediction is generalized across stations. Basically, the model is well generalized across the stations. More wrong predictions occurred around Gent-Sint-Pieters, Brussel-Noord/Bruxelles-Nord, Brussel-Centraal/Bruxelles-Central, Brussel-Zuid, Leuven, Antwerpen-Centraal. Those are comparatively big stations around big cities, thus more factors migh affect the accuracy for prediction. 
+
+```{r generalization across space, echo=TRUE, message=FALSE, warning=FALSE}
+AA <- data_f_reg %>%
+   mutate(Probs = predict(m1, newdata = data_f_reg, na.rm = TRUE, type= "response" ),
+          Pred  = as.factor(ifelse(Probs > 0.5 , 1, 0))) %>%
+  dplyr::select(rowIndex, high_occ,high_occ_num, Pred)
 
 
-### 5.3 ROC Curve for Model
+new_data <- merge(x = AA, y = data_f, by.x = "rowIndex") %>%
+  mutate(CM = case_when(
+    new_data$Pred == 0 & new_data$high_occ_num == 0 ~ 'TN',
+    Pred == 0 & high_occ_num == 1 ~ 'FN',
+    Pred == 1 & high_occ_num == 0 ~ 'FP',
+    Pred == 1 & high_occ_num == 1 ~ 'TP'),
+    Error = ifelse(Pred == high_occ_num, "Error", "No Error"))
+
+# table(new_data$CM)
+# View(new_data)
+
+conf.matrix.station <- new_data %>%
+  group_by(name, CM) %>%
+  summarize(count = n())
+
+conf.matrix.station.sf <- merge(x = conf.matrix.station, y = stations, by = "name" , all.x = TRUE)  %>%
+  st_sf()
+
+error.station <- new_data %>%
+  group_by(name,Error) %>% 
+  summarise(count = n())
+  
+# View(error.station)
+
+error.station.sf <- merge(x = error.station, y = stations, by = "name" , all.x = TRUE)  %>%
+  st_sf()
+```
+
+
+
+
+```{r Confustion Matrix across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 8, fig.width = 8}
+ggplot() +
+  geom_sf(data = rail, color = "grey") +  
+  geom_sf(data = conf.matrix.station.sf %>%
+            filter(country.code == 'be'), 
+          aes(color = count), size = 1) +
+  labs(title="Confustion Matrix across Stations",
+       subtitle = ' ',
+       caption = 'Figure 5.3.1')+ 
+  scale_colour_viridis(direction = -1,
+  discrete = FALSE, option = "plasma",
+  name = 'Counts')+
+  facet_wrap(~CM) + 
+  mapTheme()+
+  plotTheme() 
+
+ggplot() +
+  geom_sf(data = rail, color = "grey") +  
+  geom_sf(data = error.station.sf %>%
+            filter(country.code == 'be'), 
+          aes(color = count), size = 1) +
+  labs(title="Prediction Error across Stations",
+       subtitle = ' ',
+       caption = 'Figure 5.3.2')+ 
+  scale_colour_viridis(direction = -1,
+  discrete = FALSE, option = "plasma",
+  name = 'Counts')+
+  facet_wrap(~Error) + 
+  mapTheme()+
+  plotTheme() 
+```
+
+### 5.4 ROC Curve for Model
+
+Theoretically, the ROC curve indicates a TP vs. FP rate at one certain decision threshold, while AUC provides an aggregate measure of performance across all possible classification thresholds. Shown in the graph below, for every additional improvement in true positive rate, the model will make a greater proportion of false positive errors. Moving from a 75% to a 100% true positive rate dramatically increases the false positive rate. The trade-off has been triggered by such diminishing. 
+
+
+The AUC of 0.7997 indicates that for the sake of ranking a random positive example more highly than a random negative example, this model need to set the threshold no less than 0.7997.
 
 ```{r ROC Curve, message=FALSE, warning=FALSE}
 testProbs1$Outcome1 <- as.numeric(testProbs1$Outcome1)
@@ -1191,50 +1286,70 @@ ggplot(testProbs1, aes(d = as.numeric(testProbs1$Outcome1), m = Probs1)) +
   plotTheme()
 ```
 
-### 5.5 Evaluation across space
+### 5.5 Thresholds Optimization
 
-```{r new_data, echo=TRUE, message=FALSE, warning=FALSE}
-AA <- data_f_reg %>%
-   mutate(Probs = predict(m1, newdata = data_f_reg, na.rm = TRUE, type= "response" ),
-          Pred  = as.factor(ifelse(Probs > 0.5 , 1, 0))) %>%
-  dplyr::select(rowIndex, high_occ,high_occ_num, Pred)
+This section selects optimal thresholds by plotting the confusion matrix outcomes for each threshold. Graphs below indicate that with the increase of the threshold, there is no change of the confusion matrix outcome. This findings indicate that threshold might not needed to modify. 
 
 
-new_data <- merge(x = AA, y = data_f, by.x = "rowIndex") %>%
-  mutate(CM = case_when(
-    new_data$Pred == 0 & new_data$high_occ_num == 0 ~ 'TN',
-    Pred == 0 & high_occ_num == 1 ~ 'FN',
-    Pred == 1 & high_occ_num == 0 ~ 'FP',
-    Pred == 1 & high_occ_num == 1 ~ 'TP'))
 
-# table(new_data$CM)
+```{r Optimize Thresholds, echo=TRUE, message=FALSE, warning=FALSE}
+iterateThresholds <- function(data) {
+  x = 0.01
+  all_prediction <- data.frame()
+  while (x <= 1) {
+  
+  this_prediction <-
+      testProbs1 %>%
+      mutate(predOutcome_new = ifelse(Probs1 > 0.5, 1, 0)) %>%
+      count(predOutcome_new, Outcome1) %>%
+      summarize(True_Negative = sum(n[predOutcome_new==0 & Outcome1==1]),
+                True_Positive = sum(n[predOutcome_new==1 & Outcome1==2]),
+                False_Negative = sum(n[predOutcome_new==0 & Outcome1==2]),
+                False_Positive = sum(n[predOutcome_new==1 & Outcome1==1])) %>%
+      gather(Variable, Count) %>%
+      mutate(Threshold = x)
+  
+  all_prediction <- rbind(all_prediction, this_prediction)
+  x <- x + .01
+  }
+return(all_prediction)
+}
 
-conf.matrix.station <- new_data %>%
-  group_by(name, CM) %>%
-  summarize(count = n())
 
-conf.matrix.station.sf <- merge(x = conf.matrix.station, y = stations, by = "name" , all.x = TRUE)  %>%
-  st_sf()
+whichThreshold_subsidy <- iterateThresholds(testProbs1)
+# View(whichThreshold_subsidy)
+
+whichThreshold_subsidy  %>%
+  ggplot(.,aes(Threshold, Count, colour = Variable)) +
+  geom_point() +
+  scale_colour_manual(values = palette4) +    
+  labs(title = "Counts by confusion matrix type and threshold\n",
+       y = "Count",
+       caption = 'Figure 5.4') +
+  plotTheme() +
+  guides(colour=guide_legend(title = "Confusion Matrix")) 
+
+whichThreshold_subsidy_new <- 
+  whichThreshold_subsidy %>%
+  group_by(Threshold) %>%
+  summarise(Total_Count = sum(Count))
+
+View(whichThreshold_subsidy_new)
+
+whichThreshold_subsidy_new %>%
+  ggplot(aes(Threshold, Total_Count)) +
+    geom_point(color =  "#658feb") +
+    geom_vline(xintercept = dplyr::pull(arrange(whichThreshold_subsidy_new, -Total_Count)[1,1])) +
+  ylab('Total Counts')  +
+  labs(title = "Total Count of Credits by Threshold\n",
+       caption = 'Figure 6.3')  + 
+ plotTheme() 
 
 ```
 
 
-```{r Confustion Matrix across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 8, fig.width = 8}
-ggplot() +
-  geom_sf(data = rail, color = "grey") +  
-  geom_sf(data = conf.matrix.station.sf %>%
-            filter(country.code == 'be'), 
-          aes(color = count), size = 1) +
-  labs(title="Confustion Matrix across Stations",
-       subtitle = ' ',
-       caption = 'Figure')+ 
-  scale_colour_viridis(direction = -1,
-  discrete = FALSE, option = "plasma",
-  name = 'Counts')+
-  facet_wrap(~CM) + 
-  mapTheme()+
-  plotTheme() 
-```
+
+
 
 
 
