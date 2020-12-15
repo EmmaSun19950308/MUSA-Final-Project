@@ -2,7 +2,7 @@
 "0","         mutate(hour = hour(datetime)))+"
 "0","  geom_freqpoly(aes(hour, color = occupancy), binwidth = 1)+"
 "0","  scale_colour_manual(values = palette3) +"
-"0","  labs(title=""Train Shift Counts by Occupancy Level (General)"","
+"0","  labs(title=""Train Counts by Occupancy Level (General)"","
 "0","       subtitle = 'Belgium, 2016\n',"
 "0","       caption = ""Figure"","
 "0","       "
