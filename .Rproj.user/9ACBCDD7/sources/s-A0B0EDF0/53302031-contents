@@ -992,6 +992,7 @@ ggplot() +
 
 ## IV. Model Building and Prediction
 
+
 ### 4.1 Model Building
 
 Since we are more concerned about whether the occupancy level is high or not, starting from the model building, this project is planning to transform the independent variable to `high_occ` which is a binomial variable, consisting of two levels: Yes and No to identify the occupancy level is high or not. Therefore, we will build a **Logistic Regression** model. After screening the features we built above, this project builds two models: one does not include time-lag features while the other does. The statistics summary of the two models are also shown below. 
@@ -1025,9 +1026,6 @@ data_f_regTrain <- data_f_reg[ trainIndex,]
 data_f_regTest  <- data_f_reg[-trainIndex,]
 
 
-
-
-
 # m0 <- multinom(occupancy ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + time_of_day + vehicle_type , data = na.omit(data_f_reg),MaxNWts =10000000)
 
 # m1 <- multinom(occupancy ~ from + to + avg_stop_times + facility_sum + temperature + humidity + windspeed + visibility + F_H_com + F_M_com + F_L_com + T_H_com + T_M_com + T_L_com + connections + week + day + hour + min + vehicle_type + lagHour + lag2Hours + lag3Hours + lag4Hours + lag12Hours + time_of_day,  data = na.omit(data_f_reg),MaxNWts =10000000)
@@ -1051,11 +1049,13 @@ stargazer(m0, m1, type = "html",
 
 ```
 
+
+
 ### 4.2 Occupancy Prediction
 
+By leveraging the two models, we predict the occupancy level and generate two plots to show the distribution of predicted outcomes between the two models. Without distinguished differences, we cannot directly conclude which one is better so far. 
 
-
-```{r Prediction and Plot, message=FALSE, warning=FALSE}
+```{r Prediction and Plot, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8}
 testProbs0 <- data.frame(Outcome0 = as.factor(data_f_reg$high_occ_num),
                         Probs0 = predict(m0, newdata = data_f_reg, na.rm = TRUE, type= "response" ))
 
@@ -1065,18 +1065,18 @@ testProbs1 <- data.frame(Outcome1 = as.factor(data_f_reg$high_occ_num),
 
 # View(testProbs1)
 
-ggplot(testProbs0, aes(x = Probs0, fill = as.factor(Outcome0))) + 
+grid.arrange(
+  ggplot(testProbs0, aes(x = Probs0, fill = as.factor(Outcome0))) + 
   geom_density() +
   facet_grid(Outcome0 ~ .) +
   scale_fill_manual(values = palette2,
                           name = "Predicated High Occupancy",
                     labels = c("Low/Medium", "High")) +
   labs(x = "Occupancy", y = "Density of probabilities",
-       title = "Distribution of predicted probabilities by observed outcome\n",
-       caption = 'Figure') +
+       title = "Distribution of predicted probabilities by observed outcome - Model 1\n") +
   theme(strip.text.x = element_text(size = 18),
         legend.position = "bottom") +
-  plotTheme()
+  plotTheme(),
 
 ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) + 
   geom_density() +
@@ -1086,10 +1086,10 @@ ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) +
                     labels = c("Low/Medium", "High")) +
   labs(x = "Occupancy", y = "Density of probabilities",
        title = "Distribution of predicted probabilities by observed outcome - Model 2\n",
-       caption = 'Figure') +
+       caption = 'Figure 4') +
   theme(strip.text.x = element_text(size = 18),
         legend.position = "bottom") +
-  plotTheme()
+  plotTheme())
 
 
 ```
@@ -1098,7 +1098,8 @@ ggplot(testProbs1, aes(x = Probs1, fill = as.factor(Outcome1))) +
 
 ## V. Model Evaluation and Validation
 
-### 5.1 Good of Fit - Confusion Matrix
+### 5.1 Good of Fit: Confusion Matrix
+
 
 
 ```{r conf.matrix with description, echo=TRUE, message=FALSE, warning=FALSE}
