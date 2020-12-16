@@ -1,7 +1,7 @@
 ---
 title: "Final Project: BeRail, Be Easy"
 author: "Emma Sun, Yiming Ma"
-date: "12/2/2020"
+date: "12/15/2020"
 output: 
   html_document:
     toc: true
@@ -18,13 +18,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## I. Introduction
 
-Belgium has a decent public transport network, offering accessible and efficient travel across the country. Although geographically small, Belgium is bursting with popular cities like **Brussels**,**Liege**,**Charleroi**, **Gent**, and **Antwerpen**, connected by the vast network of the train system.
+![ ](/Users/penguin/Box Sync/GitHub/Final Project/banner.png)
 
-Belgium has a dense railway network, making trains the quickest and most efficient way to travel between towns and cities. In order to, train occupancy prediction can help transportation planners to improve the system by allocation public resources and decrease operation cost as well. 
+##                                               
 
-This project builds a Logistic Regression model to predict high/low occupancy rate of Belgium train stations by integrating various data sources. Model is validated across 100 folders and space patterns. The project offers insights on potential usage for transportation planners. 
+
+Belgium has a decent public transport network, offering accessible and efficient travel across the country. Although geographically small, Belgium is bursting with popular cities like Brussels,Liege,Charleroi, Gent, and Antwerpen, connected by the vast network of the train system, connected by the vast network of the train system. Thanks to the dense railway network, taking trains has become the most efficient way to commute and travel among towns and cities. 
+
+However, with the increasing demand of taking trains as well as the unbalanced development across the country, some train lines can be extremely busy with a high occupancy level, while other lines might be under operated. City planners and train conductors are super interested in the tool which can help them analyze and estimate the train occupancy level, so that they can develop a better understanding of optimizing railway operation across the country. 
+
+Existing projects and applications have made efforts to address pertinent problems but more from the perspective of customers. They have leveraged the pre-existing data and real-time data to help passengers direct a route. This project as well as the synchronous App, nevertheless, targets transportation planners including city planners and train conductors, and is dedicated to smarter decisions and better service. To facilitate the effort, this project employs regression models with comprehensive features to predict occupancy level of each train line, and embeds the algorithm into the developing App to help monitor and analyze the occupancy issue. 
+
+Specifically, this project builds a Logistic Regression model to predict high/low occupancy rate of trains in Belgium on the station's basis by integrating various data sources. Model is validated across 100 folders and space patterns. The project offers insights on resource allocation, route optimization for city planners and train conductors.  
+
 
 ![Belgium Railway Map](/Users/penguin/Box Sync/GitHub/Final Project/map.png)
+
+
+
+[Click](https://youtu.be/PrhAjW-pVkQ) here to access the BeRail introduction video. 
+
+
 
 
 ```{r Setup, message=FALSE, warning=FALSE, include=FALSE}
@@ -156,10 +170,6 @@ palette2 <- c("#eadd46","#485123")
 
 ## II. Data Loading and Feature Engineering
 
-This 
-
-
-
 ### 2.1 Data Loading
 
 This project leverages 6 datasets in total. 
@@ -177,7 +187,7 @@ This project leverages 6 datasets in total.
 *    `lines`: By connecting different stations, this [dataset](https://github.com/GillesVandewiele/KaggleTrainOccupancy) identifies train lines across Belgium.
 
 
-```{r Data loading, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Data loading, message=FALSE, warning=FALSE, include=FALSE}
 ## 1. occupancy data
 occupancy = read.csv("trains_train.csv") 
 
@@ -214,11 +224,11 @@ weather <- rbind(W701,W702,W801,W802,W901,W902,W101,W102) %>%
 ### https://ec.europa.eu/eurostat/cache/metadata/en/demo_r_gind3_esms.htm
 ### topo data
 ### https://gisco-services.ec.europa.eu/distribution/v1/nuts-2016.html
-bel <- st_read("NUTS_RG_60M_2016_4326_LEVL_3.shp") 
-popdens <- read.csv("demo_r_d2jan_1_Data.csv")
-belpopden <- bel %>%
-  left_join(dplyr::select(popdens, c(GEO, Value)), by = c("FID" = "GEO")) %>%
-  st_transform(31370)
+# bel <- st_read("NUTS_RG_60M_2016_4326_LEVL_3.shp") 
+# popdens <- read.csv("demo_r_d2jan_1_Data.csv")
+# belpopden <- bel %>%
+  # left_join(dplyr::select(popdens, c(GEO, Value)), by = c("FID" = "GEO")) %>%
+  # st_transform(31370)
 
 
 
@@ -337,7 +347,6 @@ stations_copy$stationsdist <- nn_function(st_coordinates(stations), st_coordinat
 
 Codes below calculate the distances of each station to the five major cities: **Brussels**,**Liege**,**Charleroi**, **Gent**, and **Antwerpen** measured by population size. 
 
-![Belgium Big Cities](/Users/penguin/Box Sync/GitHub/Final Project/Five biggest cities.png)
 
 
 
@@ -661,7 +670,7 @@ The findings in this section indicate that occupancy levels might be influenced 
 
 Plots below identify the station density across occupancy levels, and regardless of occupancy, the density is decreasing from the central part of the country to the periphery, indicating the overall occupancy level should be different between center and periphery. 
 
-```{r Station Density by Occupancy Level, echo=TRUE, message=FALSE, warning=FALSE,fig.height = 8, fig.width = 8}
+```{r Station Density by Occupancy Level, echo=TRUE, message=FALSE, warning=FALSE,fig.height = 4, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = data_f %>%
@@ -683,9 +692,10 @@ ggplot() +
 
 Plots below exhibits a similar patterns that more stations are clustering the central part of the country where there are more bigger cities.
 
+![Belgium Big Cities](/Users/penguin/Box Sync/GitHub/Final Project/Five biggest cities.png)
 
 
-```{r Distance of Stations to Major Cities, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8}
+```{r Distance of Stations to Major Cities, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 4, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = data_f %>%
@@ -745,7 +755,7 @@ ggplot() +
   geom_sf(data = data_f %>%
             filter(country.code == 'be'), 
           aes(color = connections) ,size = 0.5)+
-  labs(title="Station Popularity across Nation",
+  labs(title="Station Popularity Across Nation",
        subtitle = 'Counts of connections of each station\n',
        caption = 'Figure 3.1.4')+ 
   scale_colour_viridis(direction = -1,
@@ -767,7 +777,7 @@ ggplot() +
   geom_sf(data = data_f %>%
             filter(country.code == 'be'), 
           aes(color = facility_sum) ,size = 0.5)+
-  labs(title="Facility Counts across Stations",
+  labs(title="Facility Counts Across Stations",
        subtitle = 'Departure Station\n',
        caption = 'Figure 3.1.5')+ 
   scale_colour_viridis(direction = -1,
@@ -777,7 +787,7 @@ ggplot() +
   plotTheme() 
 ```
 
-### 3.2 Weather Correlation: 
+### 3.2 Weather Correlation
 
 As for weather features: humidity, wind speed, visibility and temperature, regardless of days and occupancy levels, more train shifts happen when visibility is around 9-10, while temperature is round 10 to 20. Humidity degree is around 60-100. But wind speeds are fluctuating all the time. 
 
@@ -813,7 +823,7 @@ ggplot(data_f %>%
   facet_wrap(~occupancy,ncol=3) +
   scale_colour_manual(values = palette7,
                       name = "Week Day") +
-  labs(title="Train Counts across Temperature by Occupancy Level",
+  labs(title="Train Counts Across Temperature by Occupancy Level",
        subtitle = "Belgium, 2016\n",
        caption = "Figure 3.2.2 ",
        x="Temperature", 
@@ -828,7 +838,7 @@ ggplot(data_f %>%
   facet_wrap(~occupancy,ncol=3) +
   scale_colour_manual(values = palette7,
                       name = "Week Day") +
-  labs(title="Train Counts across Humidity by Occupancy Level",
+  labs(title="Train Counts Across Humidity by Occupancy Level",
        subtitle = "Belgium, 2016\n",
        caption = "Figure 3.2.3",
        x="Humidity", 
@@ -844,7 +854,7 @@ ggplot(data_f %>%
   facet_wrap(~occupancy,ncol=3) +
   scale_colour_manual(values = palette7,
                       name = "Week Day") +
-  labs(title="Train Counts across Windspeed by Occupancy Level",
+  labs(title="Train Counts Across Windspeed by Occupancy Level",
        subtitle = "Belgium, 2016\n",
        caption = "Figure 3.2.4",
        x="Windspeed", 
@@ -859,7 +869,7 @@ ggplot(data_f %>%
   facet_wrap(~occupancy,ncol=3) +
   scale_colour_manual(values = palette7,
                       name = "Week Day") +
-  labs(title="Train Counts across Visibility by Occupancy Level",
+  labs(title="Train Counts Across Visibility by Occupancy Level",
        subtitle = "Belgium, 2016\n",
        caption = "Figure 3.2.5",
        x="Visibility", 
@@ -958,13 +968,13 @@ gganimate::animate(p1,  duration=10,renderer = gifski_renderer())
 
 Occupancy levels are influenced by both temporal and spatial factors. More trains depart from Tuesdays to Saturdays compared to other days during the week. On Mondays and Tuesdays, stations with medium and high occupancy levels spread from east to west, while on Tuesdays, Wednesdays, Thursdays, as well as Saturdays, stations in the south part of the Nation need to take more passengers. 
 
-```{r Space/Time Correlation, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8}
+```{r Space/Time Correlation, echo=TRUE, message=FALSE, warning=FALSE, fig.height = 5, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = data_f %>%
             filter(country.code == 'be'), 
           aes(color = occupancy) ,size = 0.5)+
-  labs(title="Occupancy Level across Departure Stations by Week Days\n",
+  labs(title="Occupancy Level Across Departure Stations by Week Days\n",
        caption = 'Figure 3.5.1')+ 
   facet_wrap(~day, nrow =2) +
   scale_colour_manual(values = palette3,
@@ -977,7 +987,7 @@ ggplot() +
   geom_sf(data = data_t %>%
             filter(country.code == 'be'), 
           aes(color = occupancy) ,size = 0.5)+
-  labs(title="Occupancy Level across Destination Stations by Week Days\n",
+  labs(title="Occupancy Level Across Destination Stations by Week Days\n",
        caption = 'Figure 3.5.2')+ 
   facet_wrap(~day, nrow =2) +
   scale_colour_manual(values = palette3,
@@ -1153,7 +1163,7 @@ kable(conf.matrix.table1) %>%
 
 ### 5.2 Cross Validation on 100 k-folds
 
-This section conducted cross-validation on both models. The outputs include the ROC, sensitivity and specificity across the 100 k-folds. Both models generalize well with regard to sensitivity, while neither of models generalize well with specificity. Since we are more concerned about the sensitivity as mentioned above, such an outcome is satisfied. 
+This section conducted cross-validation on both models. The outputs include the ROC, sensitivity and specificity across the 100 k-folds. The model generalizes well with regard to sensitivity. Since we are more concerned about the sensitivity as mentioned above, such an outcome is satisfied. 
 
 
 ```{r CV, message=FALSE, warning=FALSE}
@@ -1192,7 +1202,7 @@ kable(cvFit.reg1$resample,
 ```
 
 
-### 5.3 Model Generalization across Space
+### 5.3 Model Generalization Across Space
 
 This section creates two sets of plots to show how model prediction is generalized across stations. Basically, the model is well generalized across the stations. More wrong predictions occurred around Gent-Sint-Pieters, Brussel-Noord/Bruxelles-Nord, Brussel-Centraal/Bruxelles-Central, Brussel-Zuid, Leuven, Antwerpen-Centraal. Those are comparatively big stations around big cities, thus more factors migh affect the accuracy for prediction. 
 
@@ -1205,7 +1215,7 @@ AA <- data_f_reg %>%
 
 new_data <- merge(x = AA, y = data_f, by.x = "rowIndex") %>%
   mutate(CM = case_when(
-    new_data$Pred == 0 & new_data$high_occ_num == 0 ~ 'TN',
+    Pred == 0 & high_occ_num == 0 ~ 'TN',
     Pred == 0 & high_occ_num == 1 ~ 'FN',
     Pred == 1 & high_occ_num == 0 ~ 'FP',
     Pred == 1 & high_occ_num == 1 ~ 'TP'),
@@ -1233,14 +1243,13 @@ error.station.sf <- merge(x = error.station, y = stations, by = "name" , all.x =
 
 
 
-
-```{r Confustion Matrix across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 8, fig.width = 8}
+```{r Confustion Matrix Across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 6, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = conf.matrix.station.sf %>%
             filter(country.code == 'be'), 
           aes(color = count), size = 1) +
-  labs(title="Confustion Matrix across Stations",
+  labs(title="Confustion Matrix Across Stations",
        subtitle = ' ',
        caption = 'Figure 5.3.1')+ 
   scale_colour_viridis(direction = -1,
@@ -1249,13 +1258,15 @@ ggplot() +
   facet_wrap(~CM) + 
   mapTheme()+
   plotTheme() 
+```
 
+```{r Error across Stations, echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE, fig.height = 4, fig.width = 8}
 ggplot() +
   geom_sf(data = rail, color = "grey") +  
   geom_sf(data = error.station.sf %>%
             filter(country.code == 'be'), 
           aes(color = count), size = 1) +
-  labs(title="Prediction Error across Stations",
+  labs(title="Prediction Errors Across Stations",
        subtitle = ' ',
        caption = 'Figure 5.3.2')+ 
   scale_colour_viridis(direction = -1,
@@ -1266,6 +1277,7 @@ ggplot() +
   plotTheme() 
 ```
 
+
 ### 5.4 ROC Curve for Model
 
 Theoretically, the ROC curve indicates a TP vs. FP rate at one certain decision threshold, while AUC provides an aggregate measure of performance across all possible classification thresholds. Shown in the graph below, for every additional improvement in true positive rate, the model will make a greater proportion of false positive errors. Moving from a 75% to a 100% true positive rate dramatically increases the false positive rate. The trade-off has been triggered by such diminishing. 
@@ -1275,7 +1287,7 @@ The AUC of 0.7997 indicates that for the sake of ranking a random positive examp
 
 ```{r ROC Curve, message=FALSE, warning=FALSE}
 testProbs1$Outcome1 <- as.numeric(testProbs1$Outcome1)
-auc(testProbs1$Outcome1, testProbs1$Probs1)
+# auc(testProbs1$Outcome1, testProbs1$Probs1)
 
 ggplot(testProbs1, aes(d = as.numeric(testProbs1$Outcome1), m = Probs1)) +
   geom_roc(n.cuts = 50, labels = FALSE, colour = "#3e7ec2") +
@@ -1334,7 +1346,7 @@ whichThreshold_subsidy_new <-
   group_by(Threshold) %>%
   summarise(Total_Count = sum(Count))
 
-View(whichThreshold_subsidy_new)
+# View(whichThreshold_subsidy_new)
 
 whichThreshold_subsidy_new %>%
   ggplot(aes(Threshold, Total_Count)) +
@@ -1348,11 +1360,34 @@ whichThreshold_subsidy_new %>%
 ```
 
 
-
-
-
-
-
 ## VI. Conclusion
 
+### 6.1 Application
 
+As shown above, a versatile App, named as **[BeRail](https://youtu.be/PrhAjW-pVkQ)** would be developed based on the algorithm in this project. There are two primary panels built in BeRail: dashboard and query. In the dashboard interface, transportation planners are able to see an overview of occupancy levels by time and space through various visualization tools such as summary tables, heat maps, bar charts, and plots. On the other hand, the query interface works as a filter engine in which transportation planners can set specific conditions such as station, line, date and time depending on different policy goals. The filtered result can be visualized in the app or exported as a usable data format for future use. 
+
+![BeRail Dashboard Interface](/Users/penguin/Box Sync/GitHub/Final Project/interface.png)
+
+#            
+#             
+
+![BeRail Query Interface](/Users/penguin/Box Sync/GitHub/Final Project/query.png)
+
+
+Generally, this App would assist policy decision-making and help transportation planners to monitor train occupancy level and optimize the allocation of public resources while decreasing operational costs. For instance, to increase ridership and reduce resource waste, transportation planners can simply filter for stations with constant low occupancy. The result would pinpoint the stations as well as the community for infrastructure improvement. 
+
+Connecting to the current situation, the benefits of this App is beyond the previous expectation that this app can help ensure a better distribution of travelers across the various trains and to avoid boarding an overly crowded train to reduce COVID-19 risks. 
+
+
+### 6.2 Reflection
+
+It is unfortunate that this project has shown some limitations some of which are inherent in the algorithm:
+
+- First of all, for the sake of simplicity, this project transformed the three-level occupancy to the two-level occupancy. However, this initiative, to some extent, covers up the subtle differences between train lines with low occupancy level and medium occupancy level and hampers the prediction accuracy. For a better model, further efforts should be made on the development of an ordinal logistic regression model for an categorical independent variable which contains three and more, ordered levels.
+
+- Secondly, instead of analyzing occupancy levels on the basis of each OD set, this project focuses on the occupancy level of each departure station and destination station. This initiative would be under question since the occupancy level should be used for describing the overall passenger density along the train line. However, since the amount of departure stations and the amount of the destination stations are different, such a combination would generate tons of null values across features. Building models on such data would barely capture the train line characteristics. Therefore, this project sets a premise that the overall occupancy levels are always consistent among each station along a certain line, and thus, we can analyze the potential occupancy level of each station.
+
+- Thirdly, an innate limitation is that this project is built on four-year ago pre-existing data covering only four months. The poor data accessibility disturbs the accuracy and generalization of the algorithm. On the other hand, without real-time data and detailed data on the passengers’ characteristics, such as the trip purposes, special service, the current algorithm might ignore details that result in low accuracy. 
+
+
+Despite the limitations, we still believe this project is beneficial to city planners and train conductors. The previous situations can always shed light on the present problem, and help produce an annual report on the train operation and further improvements.
