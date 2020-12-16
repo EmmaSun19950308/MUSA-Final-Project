@@ -11,6 +11,7 @@ output:
     highlight: monochrome
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -1368,8 +1369,7 @@ As shown above, a versatile App, named as **[BeRail](https://youtu.be/PrhAjW-pVk
 
 ![BeRail Dashboard Interface](/Users/penguin/Box Sync/GitHub/Final Project/interface.png)
 
-#            
-#             
+           
 
 ![BeRail Query Interface](/Users/penguin/Box Sync/GitHub/Final Project/query.png)
 
