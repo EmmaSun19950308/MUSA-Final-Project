@@ -1,14 +1,18 @@
 # MUSA-Final-Project
-Members:
+## Members:
+
 Emma Sun, Yiming Ma
 
-Preview:
+## Preview:
+
 http://htmlpreview.github.io/?https://github.com/EmmaSun19950308/MUSA-Final-Project/blob/master/FinalProject9.html
 
-BeRail Introduction Video:
+## BeRail Introduction Video:
+
 https://youtu.be/PrhAjW-pVkQ
 
-Project Introduction:
+## Project Introduction:
+
 Belgium has a decent public transport network, offering accessible and efficient travel across the country. Although geographically small, Belgium is bursting with popular cities like Brussels,Liege,Charleroi, Gent, and Antwerpen, connected by the vast network of the train system, connected by the vast network of the train system. Thanks to the dense railway network, taking trains has become the most efficient way to commute and travel among towns and cities.
 
 However, with the increasing demand of taking trains as well as the unbalanced development across the country, some train lines can be extremely busy with a high occupancy level, while other lines might be under operated. City planners and train conductors are super interested in the tool which can help them analyze and estimate the train occupancy level, so that they can develop a better understanding of optimizing railway operation across the country.
