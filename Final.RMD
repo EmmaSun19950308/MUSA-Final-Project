@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ![ ](/Users/penguin/Box Sync/GitHub/Final Project/banner.png)
 
-##                                               
+                                               
 
 
 Belgium has a decent public transport network, offering accessible and efficient travel across the country. Although geographically small, Belgium is bursting with popular cities like Brussels,Liege,Charleroi, Gent, and Antwerpen, connected by the vast network of the train system, connected by the vast network of the train system. Thanks to the dense railway network, taking trains has become the most efficient way to commute and travel among towns and cities. 
